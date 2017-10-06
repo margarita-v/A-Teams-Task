@@ -17,8 +17,10 @@ public class MainActivity extends AppCompatActivity
 
     // Tag for restoring value from bundle
     private static final String SELECTED_ITEM = "arg_selected_item";
+    // ID of default menu item
+    private static final int DEFAULT_ITEM_ID = R.id.navigation_info;
     // ID of selected menu item
-    private static int selectedItemId;
+    private static int selectedItemId = DEFAULT_ITEM_ID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,15 +31,11 @@ public class MainActivity extends AppCompatActivity
         navigationView.setOnNavigationItemSelectedListener(this);
 
         // Set current fragment
-        MenuItem selectedItem;
         if (savedInstanceState != null) {
             // Restore selected menu item if it was saved
-            selectedItemId = savedInstanceState.getInt(SELECTED_ITEM, 0);
-            selectedItem = navigationView.getMenu().findItem(selectedItemId);
-        } else {
-            selectedItem = navigationView.getMenu().getItem(0);
+            selectedItemId = savedInstanceState.getInt(SELECTED_ITEM, DEFAULT_ITEM_ID);
         }
-        selectFragment(selectedItem);
+        selectFragment(selectedItemId);
     }
 
     @Override
@@ -48,17 +46,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        selectFragment(item);
+        int itemId = item.getItemId();
+        // Check if a new menu item was selected
+        if (selectedItemId != itemId)
+            selectFragment(itemId);
         return true;
     }
 
     /**
      * Add fragment to activity depending on selected menu item
-     * @param item Selected menu item
+     * @param itemId ID of selected menu item
      */
-    private void selectFragment(MenuItem item) {
+    private void selectFragment(int itemId) {
         Fragment fragment = null;
-        switch (item.getItemId()) {
+        switch (itemId) {
             case R.id.navigation_info:
                 fragment = new FragmentInfo();
                 break;
@@ -68,7 +69,7 @@ public class MainActivity extends AppCompatActivity
         }
 
         // Update selected menu item ID
-        selectedItemId = item.getItemId();
+        selectedItemId = itemId;
 
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.container, fragment);
