@@ -1,6 +1,8 @@
 package com.margarita.a_teams_task.models;
 
-public class IpAddress {
+import com.margarita.a_teams_task.models.base.BaseModel;
+
+public class IpAddress extends BaseModel {
 
     private String ip;
 

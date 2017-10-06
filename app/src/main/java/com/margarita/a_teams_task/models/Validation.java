@@ -1,8 +1,9 @@
 package com.margarita.a_teams_task.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.margarita.a_teams_task.models.base.BaseModel;
 
-public class Validation {
+public class Validation extends BaseModel {
 
     @SerializedName("object_or_array")
     private String objectOrArray;

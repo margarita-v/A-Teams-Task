@@ -1,8 +1,9 @@
 package com.margarita.a_teams_task.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.margarita.a_teams_task.models.base.BaseModel;
 
-public class DateTime {
+public class DateTime extends BaseModel {
 
     private String time;
 

@@ -1,8 +1,9 @@
 package com.margarita.a_teams_task.models;
 
 import com.google.gson.annotations.SerializedName;
+import com.margarita.a_teams_task.models.base.BaseModel;
 
-public class Headers {
+public class Headers extends BaseModel {
 
     @SerializedName("Accept-Language")
     private String acceptLanguage;

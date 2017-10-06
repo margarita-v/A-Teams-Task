@@ -1,6 +1,8 @@
 package com.margarita.a_teams_task.models;
 
-public class EchoJson {
+import com.margarita.a_teams_task.models.base.BaseModel;
+
+public class EchoJson extends BaseModel {
 
     private String key;
 
