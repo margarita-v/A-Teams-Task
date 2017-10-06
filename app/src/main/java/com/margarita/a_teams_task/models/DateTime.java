@@ -12,15 +12,10 @@ public class DateTime extends BaseModel {
 
     private String date;
 
-    public String getTime() {
-        return time;
-    }
-
-    public String getMillisecondsSinceEpoch() {
-        return millisecondsSinceEpoch;
-    }
-
-    public String getDate() {
-        return date;
+    @Override
+    public String toString() {
+        return getFieldInfo("time", this.time) + endOfLine +
+                getFieldInfo("milliseconds_since_epoch", this.millisecondsSinceEpoch) + endOfLine +
+                getFieldInfo("date", this.date);
     }
 }

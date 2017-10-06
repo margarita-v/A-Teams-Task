@@ -22,31 +22,17 @@ public class Validation extends BaseModel {
     @SerializedName("parse_time_nanoseconds")
     private int parseTimeNanoseconds;
 
-    public String getObjectOrArray() {
-        return objectOrArray;
-    }
-
-    public String getError() {
-        return error;
-    }
-
-    public String getErrorInfo() {
-        return errorInfo;
-    }
-
-    public boolean isEmpty() {
-        return empty;
-    }
-
-    public boolean isValidate() {
-        return validate;
-    }
-
-    public int getSize() {
-        return size;
-    }
-
-    public int getParseTimeNanoseconds() {
-        return parseTimeNanoseconds;
+    @Override
+    public String toString() {
+        String result = getFieldInfo("object_or_array", objectOrArray) + endOfLine +
+                getFieldInfo("validate", Boolean.toString(validate)) + endOfLine;
+        if (this.validate)
+            result += getFieldInfo("empty", Boolean.toString(empty)) + endOfLine +
+                    getFieldInfo("parse_time_nanoseconds", Integer.toString(parseTimeNanoseconds)) + endOfLine +
+                    getFieldInfo("size", Integer.toString(size));
+        else
+            result += getFieldInfo("error", error) + endOfLine +
+                    getFieldInfo("error_info", errorInfo);
+        return result;
     }
 }

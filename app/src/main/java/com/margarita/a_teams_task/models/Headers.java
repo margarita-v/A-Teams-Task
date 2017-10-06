@@ -17,19 +17,11 @@ public class Headers extends BaseModel {
     @SerializedName("Accept")
     private String accept;
 
-    public String getAcceptLanguage() {
-        return acceptLanguage;
-    }
-
-    public String getHost() {
-        return host;
-    }
-
-    public String getReferer() {
-        return referer;
-    }
-
-    public String getAccept() {
-        return accept;
+    @Override
+    public String toString() {
+        return getFieldInfo("Accept-Language", acceptLanguage) + endOfLine +
+                getFieldInfo("Host", host) + endOfLine +
+                getFieldInfo("Referer", referer) + endOfLine +
+                getFieldInfo("Accept", accept);
     }
 }

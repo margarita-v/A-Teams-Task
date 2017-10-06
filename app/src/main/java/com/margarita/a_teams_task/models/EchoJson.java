@@ -4,9 +4,10 @@ import com.margarita.a_teams_task.models.base.BaseModel;
 
 public class EchoJson extends BaseModel {
 
-    private String key;
+    private String value;
 
-    public String getKey() {
-        return key;
+    @Override
+    public String toString() {
+        return getFieldInfo("key", value);
     }
 }
