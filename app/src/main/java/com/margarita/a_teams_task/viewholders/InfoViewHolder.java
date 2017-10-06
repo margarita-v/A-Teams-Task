@@ -12,14 +12,10 @@ public class InfoViewHolder extends RecyclerView.ViewHolder {
 
     public InfoViewHolder(View itemView) {
         super(itemView);
-        tvInfo = (TextView) itemView.findViewById(R.id.tvInfo);
+        this.tvInfo = itemView.findViewById(R.id.tvInfo);
     }
 
-    public TextView getTvInfo() {
-        return tvInfo;
-    }
-
-    public void setTvInfo(TextView tvInfo) {
-        this.tvInfo = tvInfo;
+    public void setText(String text) {
+        this.tvInfo.setText(text);
     }
 }
