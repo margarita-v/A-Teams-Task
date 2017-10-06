@@ -3,4 +3,5 @@
     <string name="title_info">Info</string>
     <string name="title_contacts">Contacts</string>
     <string name="contacts">Margarita</string>
+    <string name="btn_submit">Submit</string>
 </resources>
