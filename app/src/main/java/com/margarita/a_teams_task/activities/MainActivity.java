@@ -16,7 +16,7 @@ public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
 
     // Tag for restoring value from bundle
-    private static final String SELECTED_ITEM = "arg_selected_item";
+    private static final String SELECTED_ITEM = "SELECTED_ITEM";
     // ID of default menu item
     private static final int DEFAULT_ITEM_ID = R.id.navigation_info;
     // ID of selected menu item

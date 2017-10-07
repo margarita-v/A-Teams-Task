@@ -64,6 +64,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        //TODO Change configure view holder: it should depend on position!
         BaseModel item = items.get(position);
 
         switch (holder.getItemViewType()) {
