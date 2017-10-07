@@ -6,8 +6,10 @@ public class IpAddress extends BaseModel {
 
     private String ip;
 
+    private static final String IP_FIELD = "ip";
+
     @Override
     public String toString() {
-        return getFieldInfo("ip", this.ip);
+        return getFieldInfo(IP_FIELD, this.ip);
     }
 }

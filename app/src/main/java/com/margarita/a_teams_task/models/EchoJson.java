@@ -4,10 +4,12 @@ import com.margarita.a_teams_task.models.base.BaseModel;
 
 public class EchoJson extends BaseModel {
 
-    private String value;
+    private String key;
+
+    private static final String KEY_FIELD = "key";
 
     @Override
     public String toString() {
-        return getFieldInfo("key", value);
+        return getFieldInfo(KEY_FIELD, key);
     }
 }
