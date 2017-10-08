@@ -1,17 +1,20 @@
 package com.margarita.a_teams_task.adapters;
 
 import android.content.Context;
+import android.support.v4.app.FragmentManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.margarita.a_teams_task.R;
+import com.margarita.a_teams_task.dialogs.MessageDialog;
 import com.margarita.a_teams_task.viewholders.FormViewHolder;
 import com.margarita.a_teams_task.viewholders.InfoViewHolder;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private FragmentManager fragmentManager;
     private Context context;
 
     // Objects which will be stored in RecyclerView
@@ -23,7 +26,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // IDs for different types of objects
     private static final int INFO_ID = 0, FORM_ID = 1;
 
-    public RecyclerViewAdapter(Object[] items, int[] hintStringIds) {
+    // Dialog tag
+    private static final String DIALOG_TAG = "DIALOG";
+
+    public RecyclerViewAdapter(Object[] items, int[] hintStringIds, FragmentManager fragmentManager) {
+        this.fragmentManager = fragmentManager;
+
         // Get actual items count
         this.itemsCount = items.length;
 
@@ -93,11 +101,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.getText() != null) {
+                if (holder.getTextSize() > 0) {
                     //TODO Post value to server and get response
                     //TODO Show response at the dialog fragment
+                } else {
+                    MessageDialog.newInstance(R.string.error_title, R.string.error_message)
+                            .show(fragmentManager, DIALOG_TAG);
                 }
-                //TODO Show dialog with empty string error
             }
         });
     }

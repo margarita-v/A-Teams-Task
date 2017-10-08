@@ -4,7 +4,6 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 
 import com.margarita.a_teams_task.R;
 
@@ -27,10 +26,7 @@ public class FormViewHolder extends RecyclerView.ViewHolder {
         this.textInputLayout.setHint(hint);
     }
 
-    public String getText() {
-        EditText editText = this.textInputLayout.getEditText();
-        if (editText.getTextSize() > 0)
-            return editText.getText().toString();
-        return null;
+    public int getTextSize() {
+        return this.textInputLayout.getEditText().getText().length();
     }
 }

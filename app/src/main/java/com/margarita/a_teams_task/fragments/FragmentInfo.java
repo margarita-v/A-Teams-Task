@@ -83,7 +83,8 @@ public class FragmentInfo extends Fragment {
                         performLoading(InfoLoader.LOADER_DATETIME);
                         break;
                     case InfoLoader.LOADER_DATETIME:
-                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items.toArray(), HINTS_IDS);
+                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(
+                                items.toArray(), HINTS_IDS, getActivity().getSupportFragmentManager());
                         recyclerView.setAdapter(adapter);
                         finishLoading();
                         break;
