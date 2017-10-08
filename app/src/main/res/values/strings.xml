@@ -4,4 +4,6 @@
     <string name="title_contacts">Contacts</string>
     <string name="contacts">Margarita</string>
     <string name="btn_submit">Submit</string>
+    <string name="hint_json">Please, enter a value for JSON object:"</string>
+    <string name="hint_validation">Please, enter a string in JSON format:</string>
 </resources>

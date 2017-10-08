@@ -24,6 +24,8 @@ public class InfoLoader extends Loader<BaseModel> {
 
     private int currentId;
 
+    private String request;
+
     //region Loaders' IDs
     public static final int LOADER_IP = 0;
     public static final int LOADER_HEADERS = 1;
@@ -36,6 +38,11 @@ public class InfoLoader extends Loader<BaseModel> {
         super(context);
         this.currentId = id;
         this.apiInterface = ApiClient.getApi();
+    }
+
+    public InfoLoader(Context context, int id, String request) {
+        this(context, id);
+        this.request = request;
     }
 
     @Override
@@ -59,6 +66,12 @@ public class InfoLoader extends Loader<BaseModel> {
                 break;
             case LOADER_DATETIME:
                 loadDateTime();
+                break;
+            case LOADER_JSON:
+                postJson();
+                break;
+            case LOADER_VALIDATION:
+                postValidation();
                 break;
         }
     }
@@ -110,6 +123,14 @@ public class InfoLoader extends Loader<BaseModel> {
                 deliverResult(null);
             }
         });
+    }
+
+    private void postJson() {
+
+    }
+
+    private void postValidation() {
+
     }
     //endregion
 }
