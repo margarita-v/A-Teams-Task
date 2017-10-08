@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.adapters.RecyclerViewAdapter;
@@ -42,7 +43,7 @@ public class FragmentInfo extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_IP, null, callbacks);
+        performLoading(InfoLoader.LOADER_IP);
     }
 
     private class InfoLoaderCallbacks implements LoaderManager.LoaderCallbacks<BaseModel> {
@@ -54,19 +55,25 @@ public class FragmentInfo extends Fragment {
 
         @Override
         public void onLoadFinished(Loader<BaseModel> loader, BaseModel data) {
-            switch (loader.getId()) {
-                case InfoLoader.LOADER_IP:
-                    items.add(data);
-                    getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_HEADERS, null, callbacks);
-                    break;
-                case InfoLoader.LOADER_HEADERS:
-                    items.add(data);
-                    getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_DATETIME, null, callbacks);
-                    break;
-                case InfoLoader.LOADER_DATETIME:
-                    items.add(data);
-                    finishLoading();
-                    break;
+            if (data != null) {
+                items.add(data);
+                // Start loading of the next item
+                switch (loader.getId()) {
+                    case InfoLoader.LOADER_IP:
+                        performLoading(InfoLoader.LOADER_HEADERS);
+                        break;
+                    case InfoLoader.LOADER_HEADERS:
+                        performLoading(InfoLoader.LOADER_DATETIME);
+                        break;
+                    case InfoLoader.LOADER_DATETIME:
+                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items.toArray(), HINTS_IDS);
+                        recyclerView.setAdapter(adapter);
+                        break;
+                }
+            }
+            else {
+                Toast.makeText(getContext(), "Loading error", Toast.LENGTH_SHORT).show();
+                items.clear();
             }
         }
 
@@ -76,8 +83,11 @@ public class FragmentInfo extends Fragment {
         }
     }
 
-    private void finishLoading() {
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, HINTS_IDS);
-        recyclerView.setAdapter(adapter);
+    /**
+     * Performing loading of different items
+     * @param loaderId ID of loader which should be launched
+     */
+    private void performLoading(int loaderId) {
+        getActivity().getSupportLoaderManager().restartLoader(loaderId, null, callbacks);
     }
 }

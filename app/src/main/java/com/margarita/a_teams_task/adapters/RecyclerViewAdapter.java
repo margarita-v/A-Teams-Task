@@ -7,40 +7,43 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.margarita.a_teams_task.R;
-import com.margarita.a_teams_task.models.base.BaseModel;
 import com.margarita.a_teams_task.viewholders.FormViewHolder;
 import com.margarita.a_teams_task.viewholders.InfoViewHolder;
-
-import java.util.ArrayList;
-import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private Context context;
 
     // Objects which will be stored in RecyclerView
-    private List<Object> items;
+    private Object[] items;
 
-    // Actual items count (array will store null objects for forms)
+    // Actual items count (array will store IDs of hints)
     private int itemsCount;
 
     // IDs for different types of objects
     private static final int INFO_ID = 0, FORM_ID = 1;
 
-    public RecyclerViewAdapter(List<BaseModel> items, int[] hintStringIds) {
-        this.itemsCount = items.size();
-        this.items = new ArrayList<>();
-        for (BaseModel item: items) {
-            this.items.add(item);
-        }
-        for (int id: hintStringIds) {
-            this.items.add(id);
-        }
+    public RecyclerViewAdapter(Object[] items, int[] hintStringIds) {
+        // Get actual items count
+        this.itemsCount = items.length;
+
+        // Length of whole array
+        int len = this.itemsCount + hintStringIds.length;
+
+        // Create array for items and IDs
+        this.items = new Object[len];
+
+        // Copy actual items to adapter
+        System.arraycopy(items, 0, this.items, 0, this.itemsCount);
+
+        // Add IDs of hints
+        for (int i = this.itemsCount; i < len; i++)
+            this.items[i] = hintStringIds[i - this.itemsCount];
     }
 
     @Override
     public int getItemCount() {
-        return this.items.size();
+        return this.items.length;
     }
 
     @Override
@@ -81,12 +84,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     //region Configure different view holders
     private void configureInfoViewHolder(InfoViewHolder holder, int position) {
-        holder.setText(this.items.get(position).toString());
+        holder.setText(this.items[position].toString());
     }
 
     private void configureFormViewHolder(final FormViewHolder holder, int position) {
         // Get correct hint by its ID in String resources
-        holder.setHint(this.context.getString((int) this.items.get(position)));
+        holder.setHint(this.context.getString((int) this.items[position]));
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
