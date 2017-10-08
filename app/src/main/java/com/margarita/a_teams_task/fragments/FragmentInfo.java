@@ -20,11 +20,17 @@ public class FragmentInfo extends Fragment {
     private RecyclerView recyclerView;
     private RecyclerViewAdapter adapter;
 
+    private static final int[] HINTS_IDS = { R.string.hint_json, R.string.hint_validation };
+    private static final int SIZE = 3;
+    private BaseModel[] items;
+    private int currentItemIndex;
+
     private InfoLoaderCallbacks callbacks;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         callbacks = new InfoLoaderCallbacks();
+        items = new BaseModel[SIZE];
 
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         recyclerView = view.findViewById(R.id.infoList);
@@ -35,7 +41,7 @@ public class FragmentInfo extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         //TODO Perform loading
-        //getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_IP, null, callbacks);
+        getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_IP, null, callbacks);
     }
 
     private class InfoLoaderCallbacks implements LoaderManager.LoaderCallbacks<BaseModel> {
@@ -49,16 +55,17 @@ public class FragmentInfo extends Fragment {
         public void onLoadFinished(Loader<BaseModel> loader, BaseModel data) {
             switch (loader.getId()) {
                 case InfoLoader.LOADER_IP:
+                    items[currentItemIndex++] = data;
                     getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_HEADERS, null, callbacks);
-                    //TODO Save data
                     break;
                 case InfoLoader.LOADER_HEADERS:
+                    items[currentItemIndex++] = data;
                     getActivity().getSupportLoaderManager().initLoader(InfoLoader.LOADER_DATETIME, null, callbacks);
-                    //TODO Save data
                     break;
                 case InfoLoader.LOADER_DATETIME:
-                    //TODO Save data
-                    //TODO Set adapter!
+                    items[currentItemIndex++] = data;
+                    adapter = new RecyclerViewAdapter(items, HINTS_IDS);
+                    recyclerView.setAdapter(adapter);
                     break;
             }
         }

@@ -10,17 +10,18 @@ import retrofit2.Call;
 import retrofit2.http.Body;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
+import retrofit2.http.Url;
 
 public interface ApiInterface {
 
-    @GET("http://ip.jsontest.com/")
-    Call<IpAddress> getIpAddress();
+    @GET
+    Call<IpAddress> getIpAddress(@Url String url);
 
-    @GET("http://headers.jsontest.com/")
-    Call<Headers> getHeaders();
+    @GET
+    Call<Headers> getHeaders(@Url String url);
 
-    @GET("http://date.jsontest.com/")
-    Call<DateTime> getDateAndTime();
+    @GET
+    Call<DateTime> getDateAndTime(@Url String url);
 
     //TODO Change url
     @POST("http://echo.jsontest.com/key/")

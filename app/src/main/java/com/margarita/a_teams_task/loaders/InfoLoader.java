@@ -34,6 +34,12 @@ public class InfoLoader extends Loader<BaseModel> {
     public static final int LOADER_VALIDATION = 4;
     //endregion
 
+    //region URLs
+    private static final String GET_IP_URL = "http://ip.jsontest.com/";
+    private static final String GET_HEADERS_URL = "http://headers.jsontest.com/";
+    private static final String GET_DATETIME_URL = "http://date.jsontest.com/";
+    //endregion
+
     public InfoLoader(Context context, int id) {
         super(context);
         this.currentId = id;
@@ -78,7 +84,7 @@ public class InfoLoader extends Loader<BaseModel> {
 
     //region Load different items
     private void loadIpAddress() {
-        Call<IpAddress> callItem = apiInterface.getIpAddress();
+        Call<IpAddress> callItem = apiInterface.getIpAddress(GET_IP_URL);
         callItem.enqueue(new Callback<IpAddress>() {
             @Override
             public void onResponse(Call<IpAddress> call, Response<IpAddress> response) {
@@ -94,7 +100,7 @@ public class InfoLoader extends Loader<BaseModel> {
     }
 
     private void loadHeaders() {
-        Call<Headers> callHeaders = apiInterface.getHeaders();
+        Call<Headers> callHeaders = apiInterface.getHeaders(GET_HEADERS_URL);
         callHeaders.enqueue(new Callback<Headers>() {
             @Override
             public void onResponse(Call<Headers> call, Response<Headers> response) {
@@ -110,7 +116,7 @@ public class InfoLoader extends Loader<BaseModel> {
     }
 
     private void loadDateTime() {
-        Call<DateTime> callDateTime = apiInterface.getDateAndTime();
+        Call<DateTime> callDateTime = apiInterface.getDateAndTime(GET_DATETIME_URL);
         callDateTime.enqueue(new Callback<DateTime>() {
             @Override
             public void onResponse(Call<DateTime> call, Response<DateTime> response) {
