@@ -3,7 +3,6 @@ package com.margarita.a_teams_task.activities;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
@@ -22,6 +21,10 @@ public class MainActivity extends AppCompatActivity
     // ID of selected menu item
     private static int selectedItemId = DEFAULT_ITEM_ID;
 
+    //Fragments
+    private FragmentInfo fragmentInfo;
+    private FragmentContacts fragmentContacts;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -35,6 +38,8 @@ public class MainActivity extends AppCompatActivity
             // Restore selected menu item if it was saved
             selectedItemId = savedInstanceState.getInt(SELECTED_ITEM, DEFAULT_ITEM_ID);
         }
+        fragmentInfo = new FragmentInfo();
+        fragmentContacts = new FragmentContacts();
         selectFragment(selectedItemId);
     }
 
@@ -58,21 +63,17 @@ public class MainActivity extends AppCompatActivity
      * @param itemId ID of selected menu item
      */
     private void selectFragment(int itemId) {
-        Fragment fragment = null;
+        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (itemId) {
             case R.id.navigation_info:
-                fragment = new FragmentInfo();
+                fragmentTransaction.replace(R.id.container, fragmentInfo);
                 break;
             case R.id.navigation_contacts:
-                fragment = new FragmentContacts();
+                fragmentTransaction.replace(R.id.container, fragmentContacts);
                 break;
         }
-
         // Update selected menu item ID
         selectedItemId = itemId;
-
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.container, fragment);
         fragmentTransaction.commit();
     }
 }
