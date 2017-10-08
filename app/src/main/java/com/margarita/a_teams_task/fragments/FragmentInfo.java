@@ -24,7 +24,10 @@ public class FragmentInfo extends Fragment {
 
     private RecyclerView recyclerView;
 
+    // IDs of string resources for hints in TextInputLayouts
     private static final int[] HINTS_IDS = { R.string.hint_json, R.string.hint_validation };
+
+    // List of loaded items
     private List<BaseModel> items;
 
     private InfoLoaderCallbacks callbacks;
@@ -43,6 +46,7 @@ public class FragmentInfo extends Fragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        // Start loading items consistently
         performLoading(InfoLoader.LOADER_IP);
     }
 
