@@ -86,20 +86,20 @@ public class FragmentInfo extends Fragment {
                         RecyclerViewAdapter adapter = new RecyclerViewAdapter(
                                 items.toArray(), HINTS_IDS, getActivity().getSupportFragmentManager());
                         recyclerView.setAdapter(adapter);
-                        finishLoading();
+                        finishLoading(false);
                         break;
                 }
             }
             else {
                 Toast.makeText(getContext(), "Loading error", Toast.LENGTH_SHORT).show();
-                items.clear();
-                finishLoading();
+                finishLoading(true);
             }
         }
 
         @Override
         public void onLoaderReset(Loader<BaseModel> loader) {
-
+            finishLoading(true);
+            recyclerView.setAdapter(null);
         }
     }
 
@@ -113,8 +113,11 @@ public class FragmentInfo extends Fragment {
 
     /**
      * Perform actions after loading
+     * @param hasError True if loading finished with errors
      */
-    private void finishLoading() {
+    private void finishLoading(boolean hasError) {
         swipeContainer.setRefreshing(false);
+        if (hasError)
+            items.clear();
     }
 }

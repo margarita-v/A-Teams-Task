@@ -10,6 +10,7 @@ import android.view.MenuItem;
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.fragments.FragmentContacts;
 import com.margarita.a_teams_task.fragments.FragmentInfo;
+import com.margarita.a_teams_task.loaders.InfoLoader;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -69,6 +70,11 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.container, fragmentInfo);
                 break;
             case R.id.navigation_contacts:
+                // Destroy all running loaders
+                if (getSupportLoaderManager().hasRunningLoaders()) {
+                    for (int id : InfoLoader.ALL_LOADERS)
+                        getSupportLoaderManager().destroyLoader(id);
+                }
                 fragmentTransaction.replace(R.id.container, fragmentContacts);
                 break;
         }
