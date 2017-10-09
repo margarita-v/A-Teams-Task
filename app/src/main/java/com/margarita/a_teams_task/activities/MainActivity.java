@@ -70,11 +70,8 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.container, fragmentInfo);
                 break;
             case R.id.navigation_contacts:
-                // Destroy all running loaders
-                if (getSupportLoaderManager().hasRunningLoaders()) {
-                    for (int id : InfoLoader.ALL_LOADERS)
-                        getSupportLoaderManager().destroyLoader(id);
-                }
+                for (int id : InfoLoader.ALL_LOADERS)
+                    getSupportLoaderManager().destroyLoader(id);
                 fragmentTransaction.replace(R.id.container, fragmentContacts);
                 break;
         }

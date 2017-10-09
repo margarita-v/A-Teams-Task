@@ -11,20 +11,22 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
+import android.widget.Button;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.adapters.RecyclerViewAdapter;
 import com.margarita.a_teams_task.loaders.InfoLoader;
 import com.margarita.a_teams_task.models.base.BaseModel;
+import com.rockerhieu.rvadapter.states.StatesRecyclerViewAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentInfo extends Fragment {
+public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
 
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView recyclerView;
+    private View emptyView;
 
     // IDs of string resources for hints in TextInputLayouts
     private static final int[] HINTS_IDS = { R.string.hint_json, R.string.hint_validation };
@@ -45,14 +47,25 @@ public class FragmentInfo extends Fragment {
 
         swipeContainer = view.findViewById(R.id.swipeContainer);
         swipeContainer.setColorSchemeResources(R.color.colorAccent);
-        swipeContainer.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+        swipeContainer.setOnRefreshListener(this);
+
+        emptyView = inflater.inflate(R.layout.list_empty, recyclerView, false);
+        Button btnLoad = emptyView.findViewById(R.id.btnLoad);
+        btnLoad.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onRefresh() {
-                items.clear();
-                performLoading(InfoLoader.LOADER_IP);
+            public void onClick(View view) {
+                if (!swipeContainer.isRefreshing())
+                    swipeContainer.setRefreshing(true);
+                    onRefresh();
             }
         });
         return view;
+    }
+
+    @Override
+    public void onRefresh() {
+        items.clear();
+        performLoading(InfoLoader.LOADER_IP);
     }
 
     @Override
@@ -83,22 +96,17 @@ public class FragmentInfo extends Fragment {
                         performLoading(InfoLoader.LOADER_DATETIME);
                         break;
                     case InfoLoader.LOADER_DATETIME:
-                        RecyclerViewAdapter adapter = new RecyclerViewAdapter(
-                                items.toArray(), HINTS_IDS, getActivity().getSupportFragmentManager());
-                        recyclerView.setAdapter(adapter);
                         finishLoading(false);
                         break;
                 }
             }
-            else {
-                Toast.makeText(getContext(), "Loading error", Toast.LENGTH_SHORT).show();
+            else
                 finishLoading(true);
-            }
         }
 
         @Override
         public void onLoaderReset(Loader<BaseModel> loader) {
-            finishLoading(true);
+            swipeContainer.setRefreshing(false);
             recyclerView.setAdapter(null);
         }
     }
@@ -117,7 +125,19 @@ public class FragmentInfo extends Fragment {
      */
     private void finishLoading(boolean hasError) {
         swipeContainer.setRefreshing(false);
+
+        // Clear items if loading was finished with error
         if (hasError)
             items.clear();
+
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(
+                items.toArray(), HINTS_IDS, getActivity().getSupportFragmentManager());
+        StatesRecyclerViewAdapter statesRecyclerViewAdapter = new StatesRecyclerViewAdapter(
+                adapter, null, emptyView, null);
+        recyclerView.setAdapter(statesRecyclerViewAdapter);
+
+        // Set empty view if items list is empty
+        if (hasError)
+            statesRecyclerViewAdapter.setState(StatesRecyclerViewAdapter.STATE_EMPTY);
     }
 }
