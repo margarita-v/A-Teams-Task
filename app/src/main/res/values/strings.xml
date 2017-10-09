@@ -10,12 +10,9 @@
     <string name="btn_submit">Submit</string>
     <string name="btn_load">Retry loading</string>
 
-    <!-- Hints -->
-    <string name="hint_json">Please, enter a value for JSON object:"</string>
-    <string name="hint_validation">Please, enter a string in JSON format:</string>
-
     <!-- Dialogs -->
     <string name="error_title">Error</string>
     <string name="error_message">Value should not be empty!</string>
+    <string name="error_loading">Can not load info</string>
     <string name="result_title">Result</string>
 </resources>

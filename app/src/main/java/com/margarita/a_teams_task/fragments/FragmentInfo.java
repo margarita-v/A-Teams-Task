@@ -28,13 +28,12 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
     private RecyclerView recyclerView;
     private View emptyView;
 
-    // IDs of string resources for hints in TextInputLayouts
-    private static final int[] HINTS_IDS = { R.string.hint_json, R.string.hint_validation };
-
     // List of loaded items
     private List<BaseModel> items;
 
     private InfoLoaderCallbacks callbacks;
+
+    private static final int[] FORM_LOADERS_IDS = { InfoLoader.LOADER_JSON, InfoLoader.LOADER_VALIDATION };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
@@ -132,7 +131,8 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
             items.clear();
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(
-                items.toArray(), HINTS_IDS, getActivity().getSupportFragmentManager());
+                items.toArray(), FORM_LOADERS_IDS,
+                getActivity().getSupportFragmentManager(), getActivity().getSupportLoaderManager());
         StatesRecyclerViewAdapter statesRecyclerViewAdapter = new StatesRecyclerViewAdapter(
                 adapter, null, emptyView, null);
         recyclerView.setAdapter(statesRecyclerViewAdapter);

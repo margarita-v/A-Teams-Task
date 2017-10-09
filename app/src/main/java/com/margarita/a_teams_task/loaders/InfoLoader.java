@@ -41,18 +41,7 @@ public class InfoLoader extends Loader<BaseModel> {
     public InfoLoader(Context context, int id) {
         super(context);
         this.currentId = id;
-        // Configure ApiInterface: URL depends on Loader ID
-        switch (this.currentId) {
-            case LOADER_JSON:
-                this.apiInterface = ApiClient.getApi(ApiClient.GET_URL_JSON);
-                break;
-            case LOADER_VALIDATION:
-                this.apiInterface = ApiClient.getApi(ApiClient.GET_URL_VALIDATION);
-                break;
-            default:
-                this.apiInterface = ApiClient.getApi();
-                break;
-        }
+        this.apiInterface = ApiClient.getApi();
     }
 
     public InfoLoader(Context context, int id, String request) {
@@ -157,7 +146,7 @@ public class InfoLoader extends Loader<BaseModel> {
     }
 
     private void checkValidation() {
-        Call<Validation> callValidation = apiInterface.checkValidation(request);
+        Call<Validation> callValidation = apiInterface.checkValidation(ApiClient.GET_URL_VALIDATION, request);
         callValidation.enqueue(new Callback<Validation>() {
             @Override
             public void onResponse(Call<Validation> call, Response<Validation> response) {

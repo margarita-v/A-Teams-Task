@@ -10,8 +10,9 @@ import android.support.v7.app.AppCompatDialogFragment;
 
 public class MessageDialog extends AppCompatDialogFragment implements DialogInterface.OnClickListener {
 
-    private static final int PARAMS_ID = 1;
-    private static final int PARAMS_STRING = 2;
+    // IDs of dialogs usage: show message or show loading result
+    private static final int PARAMS_MESSAGE = 1;
+    private static final int PARAMS_RESULT = 2;
 
     private static final String DIALOG_KEY = "DIALOG_KEY";
     private static final String TITLE_KEY = "TITLE_KEY";
@@ -21,13 +22,24 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
         Bundle args = new Bundle();
         args.putInt(TITLE_KEY, titleId);
         args.putInt(MESSAGE_KEY, messageId);
-        args.putInt(DIALOG_KEY, PARAMS_ID);
+        args.putInt(DIALOG_KEY, PARAMS_MESSAGE);
 
         MessageDialog dialog = new MessageDialog();
         dialog.setArguments(args);
         return dialog;
     }
 
+    public static MessageDialog newInstance(int titleId, String message) {
+        Bundle args = new Bundle();
+        args.putInt(TITLE_KEY, titleId);
+        args.putString(MESSAGE_KEY, message);
+        args.putInt(DIALOG_KEY, PARAMS_RESULT);
+
+        MessageDialog dialog = new MessageDialog();
+        dialog.setArguments(args);
+        return dialog;
+    }
+    
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
@@ -37,16 +49,17 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
         Bundle args = getArguments();
         if (args != null) {
             int dialogId = args.getInt(DIALOG_KEY);
+            int titleId = args.getInt(TITLE_KEY);
+
             switch (dialogId) {
-                case PARAMS_ID:
-                    int titleId = args.getInt(TITLE_KEY);
+                case PARAMS_MESSAGE:
                     int messageId = args.getInt(MESSAGE_KEY);
                     builder.setTitle(titleId).setMessage(messageId);
                     break;
-                case PARAMS_STRING:
-                    String title = args.getString(TITLE_KEY);
+                case PARAMS_RESULT:
                     String message = args.getString(MESSAGE_KEY);
-                    builder.setTitle(title).setMessage(message);
+                    builder.setTitle(titleId).setMessage(message);
+                    builder.setCancelable(false);
                     break;
             }
         }

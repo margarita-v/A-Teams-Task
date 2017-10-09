@@ -1,7 +1,11 @@
 package com.margarita.a_teams_task.adapters;
 
 import android.content.Context;
+import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.Loader;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,12 +13,17 @@ import android.view.ViewGroup;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.dialogs.MessageDialog;
+import com.margarita.a_teams_task.loaders.InfoLoader;
+import com.margarita.a_teams_task.models.base.BaseModel;
 import com.margarita.a_teams_task.viewholders.FormViewHolder;
 import com.margarita.a_teams_task.viewholders.InfoViewHolder;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private LoaderManager loaderManager;
     private FragmentManager fragmentManager;
+    private FormLoaderCallbacks callbacks;
+
     private Context context;
 
     // Objects which will be stored in RecyclerView
@@ -29,14 +38,19 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // Dialog tag
     private static final String DIALOG_TAG = "DIALOG";
 
-    public RecyclerViewAdapter(Object[] items, int[] hintStringIds, FragmentManager fragmentManager) {
+    private String request;
+
+    public RecyclerViewAdapter(Object[] items, int[] loadersIds,
+                               FragmentManager fragmentManager, LoaderManager loaderManager) {
+        this.loaderManager = loaderManager;
         this.fragmentManager = fragmentManager;
+        this.callbacks = new FormLoaderCallbacks();
 
         // Get actual items count
         this.itemsCount = items.length;
 
         // Length of whole array
-        int len = this.itemsCount + hintStringIds.length;
+        int len = this.itemsCount + loadersIds.length;
 
         // Create array for items and IDs
         this.items = new Object[len];
@@ -46,7 +60,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         // Add IDs of hints
         for (int i = this.itemsCount; i < len; i++)
-            this.items[i] = hintStringIds[i - this.itemsCount];
+            this.items[i] = loadersIds[i - this.itemsCount];
     }
 
     @Override
@@ -61,7 +75,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        // Save context for usage
         this.context = parent.getContext();
 
         View view;
@@ -86,7 +99,6 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (position < this.itemsCount)
             configureInfoViewHolder((InfoViewHolder) holder, position);
         else
-            // Get position in hintStringIds for correct hint
             configureFormViewHolder((FormViewHolder) holder, position);
     }
 
@@ -96,20 +108,62 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void configureFormViewHolder(final FormViewHolder holder, int position) {
-        // Get correct hint by its ID in String resources
-        holder.setHint(this.context.getString((int) this.items[position]));
+        final int loaderId = (int) this.items[position];
+        holder.setHint(loaderId);
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if (holder.getTextSize() > 0) {
-                    //TODO Post value to server and get response
-                    //TODO Show response at the dialog fragment
-                } else {
-                    MessageDialog.newInstance(R.string.error_title, R.string.error_message)
-                            .show(fragmentManager, DIALOG_TAG);
-                }
+                request = holder.getText().trim();
+                if (request.length() > 0)
+                    performLoading(loaderId);
+                else
+                    configureDialog(R.string.error_title, R.string.error_message);
             }
         });
+    }
+    //endregion
+
+    private class FormLoaderCallbacks implements LoaderManager.LoaderCallbacks<BaseModel> {
+
+        @Override
+        public Loader<BaseModel> onCreateLoader(int id, Bundle args) {
+            return new InfoLoader(context, id, request);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<BaseModel> loader, final BaseModel data) {
+            new Handler().post(new Runnable() {
+                @Override
+                public void run() {
+                    if (data != null)
+                        configureDialog(R.string.result_title, data.toString());
+                    else
+                        configureDialog(R.string.error_title, R.string.error_loading);
+                }
+            });
+        }
+
+        @Override
+        public void onLoaderReset(Loader<BaseModel> loader) {
+
+        }
+    }
+
+    /**
+     * Performing loading of different items
+     * @param loaderId ID of loader which should be launched
+     */
+    private void performLoading(int loaderId) {
+        this.loaderManager.restartLoader(loaderId, null, callbacks);
+    }
+
+    //region Configure dialogs
+    private void configureDialog(int titleId, int messageId) {
+        MessageDialog.newInstance(titleId, messageId).show(fragmentManager, DIALOG_TAG);
+    }
+
+    private void configureDialog(int titleId, String message) {
+        MessageDialog.newInstance(titleId, message).show(fragmentManager, DIALOG_TAG);
     }
     //endregion
 }

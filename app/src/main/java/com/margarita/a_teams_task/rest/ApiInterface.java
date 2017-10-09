@@ -9,6 +9,7 @@ import com.margarita.a_teams_task.models.Validation;
 import retrofit2.Call;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
+import retrofit2.http.Query;
 import retrofit2.http.Url;
 
 public interface ApiInterface {
@@ -25,6 +26,6 @@ public interface ApiInterface {
     @GET("key/{" + EchoJson.KEY_FIELD + "}")
     Call<EchoJson> getEchoJson(@Path(EchoJson.KEY_FIELD) String value);
 
-    @GET("?json={json}")
-    Call<Validation> checkValidation(@Path("json") String json);
+    @GET
+    Call<Validation> checkValidation(@Url String url, @Query("json") String json);
 }
