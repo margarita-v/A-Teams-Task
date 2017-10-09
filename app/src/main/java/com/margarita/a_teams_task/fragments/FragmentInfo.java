@@ -43,6 +43,7 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
 
         View view = inflater.inflate(R.layout.fragment_info, container, false);
         recyclerView = view.findViewById(R.id.infoList);
+        recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(container.getContext()));
 
         swipeContainer = view.findViewById(R.id.swipeContainer);

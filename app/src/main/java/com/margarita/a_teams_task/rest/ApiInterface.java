@@ -7,9 +7,8 @@ import com.margarita.a_teams_task.models.IpAddress;
 import com.margarita.a_teams_task.models.Validation;
 
 import retrofit2.Call;
-import retrofit2.http.Body;
 import retrofit2.http.GET;
-import retrofit2.http.POST;
+import retrofit2.http.Path;
 import retrofit2.http.Url;
 
 public interface ApiInterface {
@@ -23,10 +22,9 @@ public interface ApiInterface {
     @GET
     Call<DateTime> getDateAndTime(@Url String url);
 
-    //TODO Change url
-    @POST("http://echo.jsontest.com/key/")
-    Call<EchoJson> postJson(@Body String json);
+    @GET("key/{" + EchoJson.KEY_FIELD + "}")
+    Call<EchoJson> getEchoJson(@Path(EchoJson.KEY_FIELD) String value);
 
-    @POST("http://validate.jsontest.com/?json=")
-    Call<Validation> checkValidation(@Body String json);
+    @GET("?json={json}")
+    Call<Validation> checkValidation(@Path("json") String json);
 }

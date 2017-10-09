@@ -5,8 +5,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.content.Loader;
 
 import com.margarita.a_teams_task.models.DateTime;
+import com.margarita.a_teams_task.models.EchoJson;
 import com.margarita.a_teams_task.models.Headers;
 import com.margarita.a_teams_task.models.IpAddress;
+import com.margarita.a_teams_task.models.Validation;
 import com.margarita.a_teams_task.models.base.BaseModel;
 import com.margarita.a_teams_task.rest.ApiClient;
 import com.margarita.a_teams_task.rest.ApiInterface;
@@ -36,16 +38,21 @@ public class InfoLoader extends Loader<BaseModel> {
     public static final int[] ALL_LOADERS = { LOADER_IP, LOADER_HEADERS, LOADER_DATETIME, LOADER_JSON, LOADER_VALIDATION };
     //endregion
 
-    //region URLs
-    private static final String GET_IP_URL = "http://ip.jsontest.com/";
-    private static final String GET_HEADERS_URL = "http://headers.jsontest.com/";
-    private static final String GET_DATETIME_URL = "http://date.jsontest.com/";
-    //endregion
-
     public InfoLoader(Context context, int id) {
         super(context);
         this.currentId = id;
-        this.apiInterface = ApiClient.getApi();
+        // Configure ApiInterface: URL depends on Loader ID
+        switch (this.currentId) {
+            case LOADER_JSON:
+                this.apiInterface = ApiClient.getApi(ApiClient.GET_URL_JSON);
+                break;
+            case LOADER_VALIDATION:
+                this.apiInterface = ApiClient.getApi(ApiClient.GET_URL_VALIDATION);
+                break;
+            default:
+                this.apiInterface = ApiClient.getApi();
+                break;
+        }
     }
 
     public InfoLoader(Context context, int id, String request) {
@@ -76,17 +83,17 @@ public class InfoLoader extends Loader<BaseModel> {
                 loadDateTime();
                 break;
             case LOADER_JSON:
-                postJson();
+                getEchoJson();
                 break;
             case LOADER_VALIDATION:
-                postValidation();
+                checkValidation();
                 break;
         }
     }
 
     //region Load different items
     private void loadIpAddress() {
-        Call<IpAddress> callItem = apiInterface.getIpAddress(GET_IP_URL);
+        Call<IpAddress> callItem = apiInterface.getIpAddress(ApiClient.GET_IP_URL);
         callItem.enqueue(new Callback<IpAddress>() {
             @Override
             public void onResponse(Call<IpAddress> call, Response<IpAddress> response) {
@@ -102,7 +109,7 @@ public class InfoLoader extends Loader<BaseModel> {
     }
 
     private void loadHeaders() {
-        Call<Headers> callHeaders = apiInterface.getHeaders(GET_HEADERS_URL);
+        Call<Headers> callHeaders = apiInterface.getHeaders(ApiClient.GET_HEADERS_URL);
         callHeaders.enqueue(new Callback<Headers>() {
             @Override
             public void onResponse(Call<Headers> call, Response<Headers> response) {
@@ -118,7 +125,7 @@ public class InfoLoader extends Loader<BaseModel> {
     }
 
     private void loadDateTime() {
-        Call<DateTime> callDateTime = apiInterface.getDateAndTime(GET_DATETIME_URL);
+        Call<DateTime> callDateTime = apiInterface.getDateAndTime(ApiClient.GET_DATETIME_URL);
         callDateTime.enqueue(new Callback<DateTime>() {
             @Override
             public void onResponse(Call<DateTime> call, Response<DateTime> response) {
@@ -133,12 +140,36 @@ public class InfoLoader extends Loader<BaseModel> {
         });
     }
 
-    private void postJson() {
+    private void getEchoJson() {
+        Call<EchoJson> callJson = apiInterface.getEchoJson(request);
+        callJson.enqueue(new Callback<EchoJson>() {
+            @Override
+            public void onResponse(Call<EchoJson> call, Response<EchoJson> response) {
+                item = response.body();
+                deliverResult(item);
+            }
 
+            @Override
+            public void onFailure(Call<EchoJson> call, Throwable t) {
+                deliverResult(null);
+            }
+        });
     }
 
-    private void postValidation() {
+    private void checkValidation() {
+        Call<Validation> callValidation = apiInterface.checkValidation(request);
+        callValidation.enqueue(new Callback<Validation>() {
+            @Override
+            public void onResponse(Call<Validation> call, Response<Validation> response) {
+                item = response.body();
+                deliverResult(item);
+            }
 
+            @Override
+            public void onFailure(Call<Validation> call, Throwable t) {
+                deliverResult(null);
+            }
+        });
     }
     //endregion
 }

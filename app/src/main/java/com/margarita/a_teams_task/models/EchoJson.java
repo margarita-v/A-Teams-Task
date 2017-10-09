@@ -6,7 +6,7 @@ public class EchoJson extends BaseModel {
 
     private String key;
 
-    private static final String KEY_FIELD = "key";
+    public static final String KEY_FIELD = "key";
 
     @Override
     public String toString() {
