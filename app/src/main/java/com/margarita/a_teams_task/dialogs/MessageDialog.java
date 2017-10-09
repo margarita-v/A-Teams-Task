@@ -14,6 +14,7 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
     private static final int PARAMS_MESSAGE = 1;
     private static final int PARAMS_RESULT = 2;
 
+    // String keys for Bundle
     private static final String DIALOG_KEY = "DIALOG_KEY";
     private static final String TITLE_KEY = "TITLE_KEY";
     private static final String MESSAGE_KEY = "MESSAGE_KEY";
@@ -23,10 +24,7 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
         args.putInt(TITLE_KEY, titleId);
         args.putInt(MESSAGE_KEY, messageId);
         args.putInt(DIALOG_KEY, PARAMS_MESSAGE);
-
-        MessageDialog dialog = new MessageDialog();
-        dialog.setArguments(args);
-        return dialog;
+        return createDialog(args);
     }
 
     public static MessageDialog newInstance(int titleId, String message) {
@@ -34,12 +32,15 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
         args.putInt(TITLE_KEY, titleId);
         args.putString(MESSAGE_KEY, message);
         args.putInt(DIALOG_KEY, PARAMS_RESULT);
+        return createDialog(args);
+    }
 
+    private static MessageDialog createDialog(Bundle args) {
         MessageDialog dialog = new MessageDialog();
         dialog.setArguments(args);
         return dialog;
     }
-    
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {

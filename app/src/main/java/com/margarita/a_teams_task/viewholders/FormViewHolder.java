@@ -27,14 +27,22 @@ public class FormViewHolder extends RecyclerView.ViewHolder {
         return this.btnSubmit;
     }
 
+    public String getText() {
+        return this.textInputLayout.getEditText().getText().toString();
+    }
+
+    public void clearFocus() {
+        this.textInputLayout.clearFocus();
+    }
+
+    /**
+     * Set TextInputLayout hint which depends on loaderId
+     * @param loaderId Loader ID which is associated with current form
+     */
     public void setHint(int loaderId) {
         if (loaderId == InfoLoader.LOADER_JSON)
             this.textInputLayout.setHint(HINT_JSON);
         else
             this.textInputLayout.setHint(HINT_VALIDATION);
-    }
-
-    public String getText() {
-        return this.textInputLayout.getEditText().getText().toString();
     }
 }

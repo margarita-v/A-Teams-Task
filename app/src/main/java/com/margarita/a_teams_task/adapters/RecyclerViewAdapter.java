@@ -10,6 +10,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.dialogs.MessageDialog;
@@ -96,19 +97,20 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
+        Object item = this.items[position];
         if (position < this.itemsCount)
-            configureInfoViewHolder((InfoViewHolder) holder, position);
+            configureInfoViewHolder((InfoViewHolder) holder, item);
         else
-            configureFormViewHolder((FormViewHolder) holder, position);
+            configureFormViewHolder((FormViewHolder) holder, item);
     }
 
     //region Configure different view holders
-    private void configureInfoViewHolder(InfoViewHolder holder, int position) {
-        holder.setText(this.items[position].toString());
+    private void configureInfoViewHolder(InfoViewHolder holder, Object item) {
+        holder.setText(item.toString());
     }
 
-    private void configureFormViewHolder(final FormViewHolder holder, int position) {
-        final int loaderId = (int) this.items[position];
+    private void configureFormViewHolder(final FormViewHolder holder, Object item) {
+        final int loaderId = (int) item;
         holder.setHint(loaderId);
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,7 +120,10 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     performLoading(loaderId);
                 else
                     configureDialog(R.string.error_title, R.string.error_message);
-            }
+                // Clear focus of edit text and hide keyboard
+                holder.clearFocus();
+                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);            }
         });
     }
     //endregion

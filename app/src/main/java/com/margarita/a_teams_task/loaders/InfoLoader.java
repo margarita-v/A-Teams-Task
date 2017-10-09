@@ -83,82 +83,45 @@ public class InfoLoader extends Loader<BaseModel> {
     //region Load different items
     private void loadIpAddress() {
         Call<IpAddress> callItem = apiInterface.getIpAddress(ApiClient.GET_IP_URL);
-        callItem.enqueue(new Callback<IpAddress>() {
-            @Override
-            public void onResponse(Call<IpAddress> call, Response<IpAddress> response) {
-                item = response.body();
-                deliverResult(item);
-            }
-
-            @Override
-            public void onFailure(Call<IpAddress> call, Throwable t) {
-                deliverResult(null);
-            }
-        });
+        callItem.enqueue(new RetrofitCallback<IpAddress>());
     }
 
     private void loadHeaders() {
         Call<Headers> callHeaders = apiInterface.getHeaders(ApiClient.GET_HEADERS_URL);
-        callHeaders.enqueue(new Callback<Headers>() {
-            @Override
-            public void onResponse(Call<Headers> call, Response<Headers> response) {
-                item = response.body();
-                deliverResult(item);
-            }
-
-            @Override
-            public void onFailure(Call<Headers> call, Throwable t) {
-                deliverResult(null);
-            }
-        });
+        callHeaders.enqueue(new RetrofitCallback<Headers>());
     }
 
     private void loadDateTime() {
         Call<DateTime> callDateTime = apiInterface.getDateAndTime(ApiClient.GET_DATETIME_URL);
-        callDateTime.enqueue(new Callback<DateTime>() {
-            @Override
-            public void onResponse(Call<DateTime> call, Response<DateTime> response) {
-                item = response.body();
-                deliverResult(item);
-            }
-
-            @Override
-            public void onFailure(Call<DateTime> call, Throwable t) {
-                deliverResult(null);
-            }
-        });
+        callDateTime.enqueue(new RetrofitCallback<DateTime>());
     }
 
     private void getEchoJson() {
         Call<EchoJson> callJson = apiInterface.getEchoJson(request);
-        callJson.enqueue(new Callback<EchoJson>() {
-            @Override
-            public void onResponse(Call<EchoJson> call, Response<EchoJson> response) {
-                item = response.body();
-                deliverResult(item);
-            }
-
-            @Override
-            public void onFailure(Call<EchoJson> call, Throwable t) {
-                deliverResult(null);
-            }
-        });
+        callJson.enqueue(new RetrofitCallback<EchoJson>());
     }
 
     private void checkValidation() {
         Call<Validation> callValidation = apiInterface.checkValidation(ApiClient.GET_URL_VALIDATION, request);
-        callValidation.enqueue(new Callback<Validation>() {
-            @Override
-            public void onResponse(Call<Validation> call, Response<Validation> response) {
-                item = response.body();
-                deliverResult(item);
-            }
-
-            @Override
-            public void onFailure(Call<Validation> call, Throwable t) {
-                deliverResult(null);
-            }
-        });
+        callValidation.enqueue(new RetrofitCallback<Validation>());
     }
     //endregion
+
+    /**
+     * Generic class for implementing callbacks for getting data
+     * @param <T> Type of item which will be loaded
+     */
+    private class RetrofitCallback<T> implements Callback<T> {
+
+        @Override
+        public void onResponse(Call<T> call, Response<T> response) {
+            item = (BaseModel) response.body();
+            deliverResult(item);
+        }
+
+        @Override
+        public void onFailure(Call<T> call, Throwable t) {
+            deliverResult(null);
+        }
+    }
 }
