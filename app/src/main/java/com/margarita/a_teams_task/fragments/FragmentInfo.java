@@ -1,8 +1,11 @@
 package com.margarita.a_teams_task.fragments;
 
 import android.os.Bundle;
+import android.os.Handler;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -15,6 +18,7 @@ import android.widget.Button;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.adapters.RecyclerViewAdapter;
+import com.margarita.a_teams_task.dialogs.MessageDialog;
 import com.margarita.a_teams_task.loaders.InfoLoader;
 import com.margarita.a_teams_task.models.base.BaseModel;
 import com.rockerhieu.rvadapter.states.StatesRecyclerViewAdapter;
@@ -22,19 +26,28 @@ import com.rockerhieu.rvadapter.states.StatesRecyclerViewAdapter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefreshListener {
+public class FragmentInfo extends Fragment
+        implements SwipeRefreshLayout.OnRefreshListener, RecyclerViewAdapter.OnLoadingPerform {
 
+    // Widgets
     private SwipeRefreshLayout swipeContainer;
     private RecyclerView recyclerView;
     private View emptyView;
 
     // List of loaded items
     private List<BaseModel> items;
-
+    // Loading callbacks
     private InfoLoaderCallbacks callbacks;
+    // User's input which should be sent to server
+    private String request;
+
+    // Tag for dialog usage
+    public static final String DIALOG_TAG = "DIALOG";
+    private FragmentManager fragmentManager;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        fragmentManager = getActivity().getSupportFragmentManager();
         callbacks = new InfoLoaderCallbacks();
         items = new ArrayList<>();
 
@@ -74,39 +87,14 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
         performLoading(InfoLoader.LOADER_IP);
     }
 
-    private class InfoLoaderCallbacks implements LoaderManager.LoaderCallbacks<BaseModel> {
-
-        @Override
-        public Loader<BaseModel> onCreateLoader(int id, Bundle args) {
-            return new InfoLoader(getContext(), id);
+    @Override
+    public void onLoadingPerform(int loaderId, @NonNull String request) {
+        if (request.length() > 0) {
+            this.request = request;
+            performLoading(loaderId);
         }
-
-        @Override
-        public void onLoadFinished(Loader<BaseModel> loader, BaseModel data) {
-            if (data != null) {
-                items.add(data);
-                // Start loading of the next item
-                switch (loader.getId()) {
-                    case InfoLoader.LOADER_IP:
-                        performLoading(InfoLoader.LOADER_HEADERS);
-                        break;
-                    case InfoLoader.LOADER_HEADERS:
-                        performLoading(InfoLoader.LOADER_DATETIME);
-                        break;
-                    case InfoLoader.LOADER_DATETIME:
-                        finishLoading(false);
-                        break;
-                }
-            }
-            else
-                finishLoading(true);
-        }
-
-        @Override
-        public void onLoaderReset(Loader<BaseModel> loader) {
-            swipeContainer.setRefreshing(false);
-            recyclerView.setAdapter(null);
-        }
+        else
+            configureDialog(R.string.error_title, R.string.error_message);
     }
 
     /**
@@ -128,8 +116,7 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
         if (hasError)
             items.clear();
 
-        RecyclerViewAdapter adapter = new RecyclerViewAdapter(
-                items, getActivity().getSupportFragmentManager(), getActivity().getSupportLoaderManager());
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(items, this);
         StatesRecyclerViewAdapter statesRecyclerViewAdapter = new StatesRecyclerViewAdapter(
                 adapter, null, emptyView, null);
         recyclerView.setAdapter(statesRecyclerViewAdapter);
@@ -138,4 +125,67 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
         if (hasError)
             statesRecyclerViewAdapter.setState(StatesRecyclerViewAdapter.STATE_EMPTY);
     }
+
+    /**
+     * Callbacks for loading all items
+     */
+    private class InfoLoaderCallbacks implements LoaderManager.LoaderCallbacks<BaseModel> {
+
+        @Override
+        public Loader<BaseModel> onCreateLoader(int id, Bundle args) {
+            return request == null ? new InfoLoader(getContext(), id) : new InfoLoader(getContext(), id, request);
+        }
+
+        @Override
+        public void onLoadFinished(Loader<BaseModel> loader, final BaseModel data) {
+            if (loader.getId() != InfoLoader.LOADER_JSON && loader.getId() != InfoLoader.LOADER_VALIDATION) {
+                // If common item was loaded
+                if (data != null) {
+                    items.add(data);
+                    // Start loading of the next item
+                    switch (loader.getId()) {
+                        case InfoLoader.LOADER_IP:
+                            performLoading(InfoLoader.LOADER_HEADERS);
+                            break;
+                        case InfoLoader.LOADER_HEADERS:
+                            performLoading(InfoLoader.LOADER_DATETIME);
+                            break;
+                        case InfoLoader.LOADER_DATETIME:
+                            finishLoading(false);
+                            break;
+                    }
+                } else
+                    finishLoading(true);
+            }
+            else {
+                // Handler used because we can't show dialog in onLoadFinished() method
+                new Handler().post(new Runnable() {
+                    @Override
+                    public void run() {
+                        // If result of a form input was loaded
+                        if (data != null)
+                            configureDialog(R.string.result_title, data.toString());
+                        else
+                            configureDialog(R.string.error_title, R.string.error_loading);
+                    }
+                });
+            }
+        }
+
+        @Override
+        public void onLoaderReset(Loader<BaseModel> loader) {
+            swipeContainer.setRefreshing(false);
+            recyclerView.setAdapter(null);
+        }
+    }
+
+    //region Configure dialogs
+    private void configureDialog(int titleId, int messageId) {
+        MessageDialog.newInstance(titleId, messageId).show(fragmentManager, DIALOG_TAG);
+    }
+
+    private void configureDialog(int titleId, String message) {
+        MessageDialog.newInstance(titleId, message).show(fragmentManager, DIALOG_TAG);
+    }
+    //endregion
 }

@@ -18,7 +18,7 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
     private static final String DIALOG_KEY = "DIALOG_KEY";
     private static final String TITLE_KEY = "TITLE_KEY";
     private static final String MESSAGE_KEY = "MESSAGE_KEY";
-
+    
     public static MessageDialog newInstance(int titleId, int messageId) {
         Bundle args = new Bundle();
         args.putInt(TITLE_KEY, titleId);
