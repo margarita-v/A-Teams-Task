@@ -33,8 +33,6 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
 
     private InfoLoaderCallbacks callbacks;
 
-    private static final int[] FORM_LOADERS_IDS = { InfoLoader.LOADER_JSON, InfoLoader.LOADER_VALIDATION };
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         callbacks = new InfoLoaderCallbacks();
@@ -131,8 +129,7 @@ public class FragmentInfo extends Fragment implements SwipeRefreshLayout.OnRefre
             items.clear();
 
         RecyclerViewAdapter adapter = new RecyclerViewAdapter(
-                items.toArray(), FORM_LOADERS_IDS,
-                getActivity().getSupportFragmentManager(), getActivity().getSupportLoaderManager());
+                items, getActivity().getSupportFragmentManager(), getActivity().getSupportLoaderManager());
         StatesRecyclerViewAdapter statesRecyclerViewAdapter = new StatesRecyclerViewAdapter(
                 adapter, null, emptyView, null);
         recyclerView.setAdapter(statesRecyclerViewAdapter);

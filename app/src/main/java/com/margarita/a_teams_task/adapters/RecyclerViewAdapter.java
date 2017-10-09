@@ -19,6 +19,8 @@ import com.margarita.a_teams_task.models.base.BaseModel;
 import com.margarita.a_teams_task.viewholders.FormViewHolder;
 import com.margarita.a_teams_task.viewholders.InfoViewHolder;
 
+import java.util.List;
+
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
     private LoaderManager loaderManager;
@@ -27,51 +29,36 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private Context context;
 
-    // Objects which will be stored in RecyclerView
-    private Object[] items;
-
-    // Actual items count (array will store IDs of hints)
-    private int itemsCount;
+    // Items which will be stored in RecyclerView
+    private List<BaseModel> items;
 
     // IDs for different types of objects
     private static final int INFO_ID = 0, FORM_ID = 1;
-
-    // Dialog tag
+    // Loaders IDs which will be associated with forms
+    private static final int[] FORM_LOADERS_IDS = { InfoLoader.LOADER_JSON, InfoLoader.LOADER_VALIDATION };
     private static final String DIALOG_TAG = "DIALOG";
 
     private String request;
 
-    public RecyclerViewAdapter(Object[] items, int[] loadersIds,
-                               FragmentManager fragmentManager, LoaderManager loaderManager) {
+    public RecyclerViewAdapter(List<BaseModel> items, FragmentManager fragmentManager, LoaderManager loaderManager) {
         this.loaderManager = loaderManager;
         this.fragmentManager = fragmentManager;
         this.callbacks = new FormLoaderCallbacks();
+        this.items = items;
+    }
 
-        // Get actual items count
-        this.itemsCount = items.length;
-
-        // Length of whole array
-        int len = this.itemsCount + loadersIds.length;
-
-        // Create array for items and IDs
-        this.items = new Object[len];
-
-        // Copy actual items to adapter
-        System.arraycopy(items, 0, this.items, 0, this.itemsCount);
-
-        // Add IDs of hints
-        for (int i = this.itemsCount; i < len; i++)
-            this.items[i] = loadersIds[i - this.itemsCount];
+    private int size() {
+        return this.items.size();
     }
 
     @Override
     public int getItemCount() {
-        return this.items.length;
+        return size() + FORM_LOADERS_IDS.length;
     }
 
     @Override
     public int getItemViewType(int position) {
-        return position < this.itemsCount ? INFO_ID : FORM_ID;
+        return position < size() ? INFO_ID : FORM_ID;
     }
 
     @Override
@@ -97,20 +84,18 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        Object item = this.items[position];
-        if (position < this.itemsCount)
-            configureInfoViewHolder((InfoViewHolder) holder, item);
+        if (position < size())
+            configureInfoViewHolder((InfoViewHolder) holder, this.items.get(position));
         else
-            configureFormViewHolder((FormViewHolder) holder, item);
+            configureFormViewHolder((FormViewHolder) holder, FORM_LOADERS_IDS[position - size()]);
     }
 
     //region Configure different view holders
-    private void configureInfoViewHolder(InfoViewHolder holder, Object item) {
+    private void configureInfoViewHolder(InfoViewHolder holder, BaseModel item) {
         holder.setText(item.toString());
     }
 
-    private void configureFormViewHolder(final FormViewHolder holder, Object item) {
-        final int loaderId = (int) item;
+    private void configureFormViewHolder(final FormViewHolder holder, final int loaderId) {
         holder.setHint(loaderId);
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
