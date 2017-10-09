@@ -6,11 +6,14 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
+import android.view.View;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.fragments.FragmentContacts;
 import com.margarita.a_teams_task.fragments.FragmentInfo;
 import com.margarita.a_teams_task.loaders.InfoLoader;
+
+import mehdi.sakout.aboutpage.AboutPage;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -26,6 +29,17 @@ public class MainActivity extends AppCompatActivity
     private FragmentInfo fragmentInfo;
     private FragmentContacts fragmentContacts;
 
+    //region Strings for a contacts view
+    private static final String DESCRIPTION = "This is a test project which implements client-server architecture";
+    private static final String CONNECT = "Connect with us";
+    private static final String MAIL = "Mail address";
+    private static final String MAIL_LINK = "margo.himera@yandex.ru";
+    private static final String GITHUB = "GitHub account";
+    private static final String GITHUB_LINK = "margarita-v";
+    private static final String WEBSITE = "View VK page";
+    private static final String WEBSITE_LINK = "https://vk.com/margarita_himera";
+    //endregion
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,8 +53,20 @@ public class MainActivity extends AppCompatActivity
             // Restore selected menu item if it was saved
             selectedItemId = savedInstanceState.getInt(SELECTED_ITEM, DEFAULT_ITEM_ID);
         }
+
+        // Configure contacts view
+        View contactsView = new AboutPage(this)
+                .isRTL(false)
+                .setImage(R.drawable.ic_android_black_24dp)
+                .setDescription(DESCRIPTION)
+                .addGroup(CONNECT)
+                .addEmail(MAIL_LINK, MAIL)
+                .addGitHub(GITHUB_LINK, GITHUB)
+                .addWebsite(WEBSITE_LINK, WEBSITE)
+                .create();
+
         fragmentInfo = new FragmentInfo();
-        fragmentContacts = new FragmentContacts();
+        fragmentContacts = FragmentContacts.newInstance(contactsView);
         selectFragment(selectedItemId);
     }
 
