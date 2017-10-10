@@ -1,5 +1,6 @@
 package com.margarita.a_teams_task.fragments;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -17,9 +18,11 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import com.margarita.a_teams_task.R;
+import com.margarita.a_teams_task.activities.ValidationActivity;
 import com.margarita.a_teams_task.adapters.RecyclerViewAdapter;
 import com.margarita.a_teams_task.dialogs.MessageDialog;
 import com.margarita.a_teams_task.loaders.InfoLoader;
+import com.margarita.a_teams_task.models.Validation;
 import com.margarita.a_teams_task.models.base.BaseModel;
 import com.rockerhieu.rvadapter.states.StatesRecyclerViewAdapter;
 
@@ -43,10 +46,13 @@ public class FragmentInfo extends Fragment
 
     // Tag for dialog usage
     public static final String DIALOG_TAG = "DIALOG";
+
     private FragmentManager fragmentManager;
+    private Intent validationIntent;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        validationIntent = new Intent(getActivity(), ValidationActivity.class);
         fragmentManager = getActivity().getSupportFragmentManager();
         callbacks = new InfoLoaderCallbacks();
         items = new ArrayList<>();
@@ -136,7 +142,7 @@ public class FragmentInfo extends Fragment
         }
 
         @Override
-        public void onLoadFinished(Loader<BaseModel> loader, final BaseModel data) {
+        public void onLoadFinished(final Loader<BaseModel> loader, final BaseModel data) {
             if (loader.getId() != InfoLoader.LOADER_JSON && loader.getId() != InfoLoader.LOADER_VALIDATION) {
                 // If common item was loaded
                 if (data != null) {
@@ -162,8 +168,12 @@ public class FragmentInfo extends Fragment
                     @Override
                     public void run() {
                         // If result of a form input was loaded
-                        if (data != null)
-                            configureDialog(R.string.result_title, data.toString());
+                        if (data != null) {
+                            if (loader.getId() == InfoLoader.LOADER_JSON)
+                                configureDialog(R.string.result_title, data.toString());
+                            else
+                                startActivity(validationIntent.putExtra(Validation.CLASS_NAME, data.toString()));
+                        }
                         else
                             configureDialog(R.string.error_title, R.string.error_loading);
                     }
