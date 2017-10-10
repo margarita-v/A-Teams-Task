@@ -1,5 +1,6 @@
 package com.margarita.a_teams_task.fragments;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.NonNull;
@@ -14,6 +15,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 
 import com.margarita.a_teams_task.R;
@@ -94,6 +96,19 @@ public class FragmentInfo extends Fragment
         }
         else
             configureDialog(R.string.error_title, R.string.error_message);
+        hideKeyboard();
+    }
+
+    /**
+     * Hide keyboard and clear focus
+     */
+    public void hideKeyboard() {
+        View view = getActivity().getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            view.clearFocus();
+        }
     }
 
     /**
@@ -165,7 +180,7 @@ public class FragmentInfo extends Fragment
                         if (data != null)
                             configureDialog(R.string.result_title, data.toString());
                         else
-                            configureDialog(R.string.error_title, R.string.error_loading);
+                            configureDialog(R.string.error_title, R.string.loading_error);
                     }
                 });
             }

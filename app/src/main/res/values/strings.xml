@@ -17,6 +17,5 @@
     <!-- Dialogs -->
     <string name="error_title">Error</string>
     <string name="error_message">Value should not be empty!</string>
-    <string name="error_loading">Can not load info</string>
     <string name="result_title">Result</string>
 </resources>

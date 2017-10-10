@@ -35,15 +35,15 @@ public class Validation extends BaseModel {
 
     @Override
     public String toString() {
-        String result = getFieldInfo(OBJECT_FIELD, objectOrArray) + endOfLine +
-                getFieldInfo(VALIDATE_FIELD, Boolean.toString(validate)) + endOfLine;
+        String result = getFieldInfo(OBJECT_FIELD, objectOrArray + endOfLine) + endOfLine +
+                getFieldInfo(VALIDATE_FIELD, Boolean.toString(validate) + endOfLine) + endOfLine;
         if (this.validate)
-            result += getFieldInfo(EMPTY_FIELD, Boolean.toString(empty)) + endOfLine +
-                    getFieldInfo(PARSE_TIME_FIELD, Integer.toString(parseTimeNanoseconds)) + endOfLine +
-                    getFieldInfo(SIZE_FIELD, Integer.toString(size));
+            result += getFieldInfo(EMPTY_FIELD, Boolean.toString(empty) + endOfLine) + endOfLine +
+                    getFieldInfo(PARSE_TIME_FIELD, Integer.toString(parseTimeNanoseconds) + endOfLine) + endOfLine +
+                    getFieldInfo(SIZE_FIELD, Integer.toString(size) + endOfLine);
         else
-            result += getFieldInfo(ERROR_FIELD, error) + endOfLine +
-                    getFieldInfo(ERROR_INFO_FIELD, errorInfo);
+            result += getFieldInfo(ERROR_FIELD, endOfLine + error + endOfLine) + endOfLine +
+                    getFieldInfo(ERROR_INFO_FIELD, endOfLine + errorInfo);
         return result;
     }
 

@@ -106,8 +106,12 @@ public class MainActivity extends AppCompatActivity
                 fragmentTransaction.replace(R.id.container, fragmentInfo);
                 break;
             case R.id.navigation_contacts:
+                // Destroy loaders
                 for (int id : InfoLoader.ALL_LOADERS)
                     getSupportLoaderManager().destroyLoader(id);
+                // Hide keyboard
+                fragmentInfo.hideKeyboard();
+                // Replace fragment
                 fragmentTransaction.replace(R.id.container, fragmentContacts);
                 break;
         }

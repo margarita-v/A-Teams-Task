@@ -1,12 +1,10 @@
 package com.margarita.a_teams_task.adapters;
 
-import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.loaders.InfoLoader;
@@ -20,9 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
-
-    // Activity context for usage
-    private Context context;
 
     // Items which will be stored in RecyclerView
     private List<BaseModel> items;
@@ -58,11 +53,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        this.context = parent.getContext();
-
         View view;
         RecyclerView.ViewHolder viewHolder = null;
-        LayoutInflater inflater = LayoutInflater.from(this.context);
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
 
         switch (viewType) {
             case INFO_ID:
@@ -103,15 +96,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                // Callback to fragment
                 onLoadingPerformListener.onLoadingPerform(loaderId, holder.getText().trim());
-                // Clear focus of edit text and hide keyboard
-                holder.clearFocus();
-                InputMethodManager imm = (InputMethodManager) context.getSystemService(Context.INPUT_METHOD_SERVICE);
-                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             }
         });
     }
+    //endregion
 
     /**
      * Interface for connection with fragment when loading should be started
