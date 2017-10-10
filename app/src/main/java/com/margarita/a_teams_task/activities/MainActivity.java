@@ -55,6 +55,7 @@ public class MainActivity extends AppCompatActivity
         if (savedInstanceState != null) {
             // Restore selected menu item if it was saved
             selectedItemId = savedInstanceState.getInt(SELECTED_ITEM, DEFAULT_ITEM_ID);
+            navigationView.setSelectedItemId(selectedItemId);
         }
 
         // Configure contacts view
