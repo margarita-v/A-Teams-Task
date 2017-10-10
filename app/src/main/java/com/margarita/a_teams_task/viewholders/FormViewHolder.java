@@ -7,19 +7,12 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.margarita.a_teams_task.R;
-import com.margarita.a_teams_task.loaders.InfoLoader;
-import com.margarita.a_teams_task.models.EchoJson;
-import com.margarita.a_teams_task.models.Validation;
 
 public class FormViewHolder extends RecyclerView.ViewHolder {
 
     private TextView tvName;
     private TextInputLayout textInputLayout;
     private Button btnSubmit;
-
-    // Hints
-    private static final String HINT_JSON = "Please, enter a value for JSON object:";
-    private static final String HINT_VALIDATION = "Please, enter a string in JSON format:";
 
     public FormViewHolder(View itemView) {
         super(itemView);
@@ -40,18 +33,7 @@ public class FormViewHolder extends RecyclerView.ViewHolder {
         this.textInputLayout.clearFocus();
     }
 
-    /**
-     * Set TextInputLayout hint and TextView text which depends on loaderId
-     * @param loaderId Loader ID which is associated with current form
-     */
-    public void setHintAndName(int loaderId) {
-        if (loaderId == InfoLoader.LOADER_JSON) {
-            this.tvName.setText(EchoJson.CLASS_NAME);
-            this.textInputLayout.setHint(HINT_JSON);
-        }
-        else {
-            this.tvName.setText(Validation.CLASS_NAME);
-            this.textInputLayout.setHint(HINT_VALIDATION);
-        }
+    public void setName(String name) {
+        this.tvName.setText(name);
     }
 }

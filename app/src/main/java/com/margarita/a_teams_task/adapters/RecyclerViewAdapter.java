@@ -10,6 +10,8 @@ import android.view.inputmethod.InputMethodManager;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.loaders.InfoLoader;
+import com.margarita.a_teams_task.models.EchoJson;
+import com.margarita.a_teams_task.models.Validation;
 import com.margarita.a_teams_task.models.base.BaseModel;
 import com.margarita.a_teams_task.viewholders.FormViewHolder;
 import com.margarita.a_teams_task.viewholders.InfoViewHolder;
@@ -25,8 +27,8 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // Items which will be stored in RecyclerView
     private List<BaseModel> items;
 
-    // IDs for different types of objects
-    private static final int INFO_ID = 0, FORM_ID = 1;
+    // ID of common objects
+    private static final int INFO_ID = 0;
     // Loaders IDs which will be associated with forms
     private static final int[] FORM_LOADERS_IDS = { InfoLoader.LOADER_JSON, InfoLoader.LOADER_VALIDATION };
 
@@ -49,7 +51,9 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     @Override
     public int getItemViewType(int position) {
-        return position < size() ? INFO_ID : FORM_ID;
+        if (position < size())
+            return INFO_ID;
+        return FORM_LOADERS_IDS[position - size()];
     }
 
     @Override
@@ -65,10 +69,13 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 view = inflater.inflate(R.layout.info, parent, false);
                 viewHolder = new InfoViewHolder(view);
                 break;
-            case FORM_ID:
-                view = inflater.inflate(R.layout.form, parent, false);
+            case InfoLoader.LOADER_JSON:
+                view = inflater.inflate(R.layout.form_json, parent, false);
                 viewHolder = new FormViewHolder(view);
                 break;
+            case InfoLoader.LOADER_VALIDATION:
+                view = inflater.inflate(R.layout.form_validation, parent, false);
+                viewHolder = new FormViewHolder(view);
         }
         return viewHolder;
     }
@@ -78,7 +85,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if (position < size())
             configureInfoViewHolder((InfoViewHolder) holder, this.items.get(position));
         else
-            configureFormViewHolder((FormViewHolder) holder, FORM_LOADERS_IDS[position - size()]);
+            configureFormViewHolder((FormViewHolder) holder, getItemViewType(position));
     }
 
     //region Configure different view holders
@@ -88,7 +95,11 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     private void configureFormViewHolder(final FormViewHolder holder, final int loaderId) {
-        holder.setHintAndName(loaderId);
+        if (loaderId == InfoLoader.LOADER_JSON)
+            holder.setName(EchoJson.CLASS_NAME);
+        else
+            holder.setName(Validation.CLASS_NAME);
+
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

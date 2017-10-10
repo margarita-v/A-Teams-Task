@@ -6,6 +6,10 @@
     <string name="contacts">Margarita</string>
     <string name="loading_error">Can not load information\nPlease, check Internet connection</string>
 
+    <!-- TextInputLayout hints -->
+    <string name="hint_json">Please, enter a value for JSON object:</string>
+    <string name="hint_validation">Please, enter a string in JSON format:</string>
+
     <!-- Buttons -->
     <string name="btn_submit">Submit</string>
     <string name="btn_load">Retry loading</string>
