@@ -11,24 +11,25 @@ public class Headers extends BaseModel {
     @SerializedName(HOST_FIELD)
     private String host;
 
-    @SerializedName(REFERER_FIELD)
-    private String referer;
-
-    @SerializedName(ACCEPT_FIELD)
-    private String accept;
+    @SerializedName(USER_AGENT_FIELD)
+    private String userAgent;
 
     //region Field's names
+    private static final String CLASS_NAME = "Headers";
     private static final String ACCEPT_LANGUAGE_FIELD = "Accept-Language";
     private static final String HOST_FIELD = "Host";
-    private static final String REFERER_FIELD = "Referer";
-    private static final String ACCEPT_FIELD = "Accept";
+    private static final String USER_AGENT_FIELD = "User-Agent";
     //endregion
 
     @Override
     public String toString() {
         return getFieldInfo(ACCEPT_LANGUAGE_FIELD, acceptLanguage) + endOfLine +
                 getFieldInfo(HOST_FIELD, host) + endOfLine +
-                getFieldInfo(REFERER_FIELD, referer) + endOfLine +
-                getFieldInfo(ACCEPT_FIELD, accept);
+                getFieldInfo(USER_AGENT_FIELD, userAgent);
+    }
+
+    @Override
+    public String getClassName() {
+        return CLASS_NAME;
     }
 }

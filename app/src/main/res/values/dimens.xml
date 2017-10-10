@@ -4,4 +4,6 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="cardview_height">100dp</dimen>
     <dimen name="cardview_layout_margin">5dp</dimen>
+    <dimen name="cardview_corner_radius">3dp</dimen>
+    <dimen name="form_height">130dp</dimen>
 </resources>

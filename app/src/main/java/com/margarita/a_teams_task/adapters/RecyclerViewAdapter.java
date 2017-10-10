@@ -83,11 +83,12 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     //region Configure different view holders
     private void configureInfoViewHolder(InfoViewHolder holder, BaseModel item) {
-        holder.setText(item.toString());
+        holder.setInfo(item.toString());
+        holder.setName(item.getClassName());
     }
 
     private void configureFormViewHolder(final FormViewHolder holder, final int loaderId) {
-        holder.setHint(loaderId);
+        holder.setHintAndName(loaderId);
         holder.getBtnSubmit().setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

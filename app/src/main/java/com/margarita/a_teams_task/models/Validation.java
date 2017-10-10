@@ -23,6 +23,7 @@ public class Validation extends BaseModel {
     private int parseTimeNanoseconds;
 
     //region Field's names
+    public static final String CLASS_NAME = "Validation";
     private static final String OBJECT_FIELD = "object_or_array";
     private static final String ERROR_FIELD = "error";
     private static final String ERROR_INFO_FIELD = "error_info";
@@ -44,5 +45,10 @@ public class Validation extends BaseModel {
             result += getFieldInfo(ERROR_FIELD, error) + endOfLine +
                     getFieldInfo(ERROR_INFO_FIELD, errorInfo);
         return result;
+    }
+
+    @Override
+    public String getClassName() {
+        return CLASS_NAME;
     }
 }

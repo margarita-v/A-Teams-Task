@@ -8,14 +8,20 @@ import com.margarita.a_teams_task.R;
 
 public class InfoViewHolder extends RecyclerView.ViewHolder {
 
+    private TextView tvName;
     private TextView tvInfo;
 
     public InfoViewHolder(View itemView) {
         super(itemView);
+        this.tvName = itemView.findViewById(R.id.tvName);
         this.tvInfo = itemView.findViewById(R.id.tvInfo);
     }
 
-    public void setText(String text) {
-        this.tvInfo.setText(text);
+    public void setName(String name) {
+        this.tvName.setText(name);
+    }
+
+    public void setInfo(String info) {
+        this.tvInfo.setText(info);
     }
 }

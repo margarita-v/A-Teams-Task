@@ -13,6 +13,7 @@ public class DateTime extends BaseModel {
     private String date;
 
     //region Field's names
+    private static final String CLASS_NAME = "Date & Time";
     private static final String TIME_FIELD = "time";
     private static final String MILLISECONDS_FIELD = "milliseconds_since_epoch";
     private static final String DATE_FIELD = "date";
@@ -23,5 +24,10 @@ public class DateTime extends BaseModel {
         return getFieldInfo(TIME_FIELD, this.time) + endOfLine +
                 getFieldInfo(MILLISECONDS_FIELD, this.millisecondsSinceEpoch) + endOfLine +
                 getFieldInfo(DATE_FIELD, this.date);
+    }
+
+    @Override
+    public String getClassName() {
+        return CLASS_NAME;
     }
 }

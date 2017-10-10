@@ -24,7 +24,7 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
         args.putInt(TITLE_KEY, titleId);
         args.putInt(MESSAGE_KEY, messageId);
         args.putInt(DIALOG_KEY, PARAMS_MESSAGE);
-        return createDialog(args);
+        return createDialog(args, true);
     }
 
     public static MessageDialog newInstance(int titleId, String message) {
@@ -32,12 +32,13 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
         args.putInt(TITLE_KEY, titleId);
         args.putString(MESSAGE_KEY, message);
         args.putInt(DIALOG_KEY, PARAMS_RESULT);
-        return createDialog(args);
+        return createDialog(args, false);
     }
 
-    private static MessageDialog createDialog(Bundle args) {
+    private static MessageDialog createDialog(Bundle args, boolean isCancelable) {
         MessageDialog dialog = new MessageDialog();
         dialog.setArguments(args);
+        dialog.setCancelable(isCancelable);
         return dialog;
     }
 
@@ -60,7 +61,6 @@ public class MessageDialog extends AppCompatDialogFragment implements DialogInte
                 case PARAMS_RESULT:
                     String message = args.getString(MESSAGE_KEY);
                     builder.setTitle(titleId).setMessage(message);
-                    builder.setCancelable(false);
                     break;
             }
         }

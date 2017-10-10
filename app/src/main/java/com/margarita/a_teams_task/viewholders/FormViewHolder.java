@@ -4,12 +4,16 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.loaders.InfoLoader;
+import com.margarita.a_teams_task.models.EchoJson;
+import com.margarita.a_teams_task.models.Validation;
 
 public class FormViewHolder extends RecyclerView.ViewHolder {
 
+    private TextView tvName;
     private TextInputLayout textInputLayout;
     private Button btnSubmit;
 
@@ -19,6 +23,7 @@ public class FormViewHolder extends RecyclerView.ViewHolder {
 
     public FormViewHolder(View itemView) {
         super(itemView);
+        this.tvName = itemView.findViewById(R.id.tvName);
         this.textInputLayout = itemView.findViewById(R.id.textInputLayout);
         this.btnSubmit = itemView.findViewById(R.id.btnSubmit);
     }
@@ -36,13 +41,17 @@ public class FormViewHolder extends RecyclerView.ViewHolder {
     }
 
     /**
-     * Set TextInputLayout hint which depends on loaderId
+     * Set TextInputLayout hint and TextView text which depends on loaderId
      * @param loaderId Loader ID which is associated with current form
      */
-    public void setHint(int loaderId) {
-        if (loaderId == InfoLoader.LOADER_JSON)
+    public void setHintAndName(int loaderId) {
+        if (loaderId == InfoLoader.LOADER_JSON) {
+            this.tvName.setText(EchoJson.CLASS_NAME);
             this.textInputLayout.setHint(HINT_JSON);
-        else
+        }
+        else {
+            this.tvName.setText(Validation.CLASS_NAME);
             this.textInputLayout.setHint(HINT_VALIDATION);
+        }
     }
 }
