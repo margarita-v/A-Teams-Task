@@ -1,22 +1,16 @@
 package com.margarita.a_teams_task.activities;
 
-import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MenuItem;
-import android.view.View;
 
 import com.margarita.a_teams_task.R;
 import com.margarita.a_teams_task.fragments.FragmentContacts;
 import com.margarita.a_teams_task.fragments.FragmentInfo;
 import com.margarita.a_teams_task.loaders.InfoLoader;
-
-import mehdi.sakout.aboutpage.AboutPage;
-import mehdi.sakout.aboutpage.Element;
 
 public class MainActivity extends AppCompatActivity
         implements BottomNavigationView.OnNavigationItemSelectedListener {
@@ -32,17 +26,6 @@ public class MainActivity extends AppCompatActivity
     private FragmentInfo fragmentInfo;
     private FragmentContacts fragmentContacts;
 
-    //region Strings for a contacts view
-    private static final String DESCRIPTION = "This is a test project which implements client-server architecture";
-    private static final String CONNECT = "Connect with us";
-    private static final String MAIL = "margo.himera@yandex.ru";
-    private static final String GITHUB = "GitHub account";
-    private static final String GITHUB_LINK = "margarita-v";
-    private static final String WEBSITE = "View VK page";
-    private static final String WEBSITE_LINK = "https://vk.com/margarita_h";
-    private static final String PHONE = "89507605844";
-    //endregion
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,32 +35,15 @@ public class MainActivity extends AppCompatActivity
         navigationView.setOnNavigationItemSelectedListener(this);
 
         // Set current fragment
-        if (savedInstanceState != null) {
+        boolean isRestored = savedInstanceState != null;
+        if (isRestored) {
             // Restore selected menu item if it was saved
             selectedItemId = savedInstanceState.getInt(SELECTED_ITEM, DEFAULT_ITEM_ID);
             navigationView.setSelectedItemId(selectedItemId);
         }
-
-        // Configure contacts view
-        Element phoneElement = new Element()
-                .setTitle(PHONE)
-                .setIconDrawable(R.drawable.ic_phone_black_24dp)
-                .setIntent(new Intent(Intent.ACTION_DIAL, Uri.parse("tel:" + PHONE)));
-
-        View contactsView = new AboutPage(this)
-                .isRTL(false)
-                .setImage(R.drawable.ic_android_black_24dp)
-                .setDescription(DESCRIPTION)
-                .addGroup(CONNECT)
-                .addEmail(MAIL, MAIL)
-                .addItem(phoneElement)
-                .addGitHub(GITHUB_LINK, GITHUB)
-                .addWebsite(WEBSITE_LINK, WEBSITE)
-                .create();
-
         fragmentInfo = new FragmentInfo();
-        fragmentContacts = FragmentContacts.newInstance(contactsView);
-        selectFragment(selectedItemId);
+        fragmentContacts = new FragmentContacts();
+        selectFragment(selectedItemId, isRestored);
     }
 
     @Override
@@ -91,7 +57,7 @@ public class MainActivity extends AppCompatActivity
         int itemId = item.getItemId();
         // Check if a new menu item was selected
         if (selectedItemId != itemId)
-            selectFragment(itemId);
+            selectFragment(itemId, false);
         return true;
     }
 
@@ -99,18 +65,20 @@ public class MainActivity extends AppCompatActivity
      * Add fragment to activity depending on selected menu item
      * @param itemId ID of selected menu item
      */
-    private void selectFragment(int itemId) {
+    private void selectFragment(int itemId, boolean isRestored) {
         FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
         switch (itemId) {
             case R.id.navigation_info:
                 fragmentTransaction.replace(R.id.container, fragmentInfo);
                 break;
             case R.id.navigation_contacts:
-                // Destroy loaders
-                for (int id : InfoLoader.ALL_LOADERS)
-                    getSupportLoaderManager().destroyLoader(id);
-                // Hide keyboard
-                fragmentInfo.hideKeyboard();
+                if (!isRestored) {
+                    // Destroy loaders
+                    for (int id : InfoLoader.ALL_LOADERS)
+                        getSupportLoaderManager().destroyLoader(id);
+                    // Hide keyboard
+                    fragmentInfo.hideKeyboard();
+                }
                 // Replace fragment
                 fragmentTransaction.replace(R.id.container, fragmentContacts);
                 break;
