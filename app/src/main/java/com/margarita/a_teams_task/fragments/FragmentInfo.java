@@ -105,8 +105,10 @@ public class FragmentInfo extends Fragment
     public void hideKeyboard() {
         View view = getActivity().getCurrentFocus();
         if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getActivity().getSystemService(Context.INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+            InputMethodManager imm = (InputMethodManager) getActivity()
+                            .getSystemService(Context.INPUT_METHOD_SERVICE);
+            if (imm != null)
+                imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
             view.clearFocus();
         }
     }
@@ -152,7 +154,9 @@ public class FragmentInfo extends Fragment
 
         @Override
         public void onLoadFinished(Loader<BaseModel> loader, final BaseModel data) {
-            if (loader.getId() != InfoLoader.LOADER_JSON && loader.getId() != InfoLoader.LOADER_VALIDATION) {
+            if (loader.getId() != InfoLoader.LOADER_JSON &&
+                    loader.getId() != InfoLoader.LOADER_VALIDATION) {
+
                 // If common item was loaded
                 if (data != null) {
                     items.add(data);

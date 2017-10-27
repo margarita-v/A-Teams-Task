@@ -31,7 +31,7 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        BottomNavigationView navigationView = (BottomNavigationView) findViewById(R.id.navigation);
+        BottomNavigationView navigationView = findViewById(R.id.navigation);
         navigationView.setOnNavigationItemSelectedListener(this);
 
         // Set current fragment
@@ -66,7 +66,8 @@ public class MainActivity extends AppCompatActivity
      * @param itemId ID of selected menu item
      */
     private void selectFragment(int itemId, boolean isRestored) {
-        FragmentTransaction fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        FragmentTransaction fragmentTransaction =
+                getSupportFragmentManager().beginTransaction();
         switch (itemId) {
             case R.id.navigation_info:
                 fragmentTransaction.replace(R.id.container, fragmentInfo);

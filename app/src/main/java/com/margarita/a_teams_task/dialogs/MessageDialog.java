@@ -8,7 +8,8 @@ import android.support.annotation.NonNull;
 
 import android.support.v7.app.AppCompatDialogFragment;
 
-public class MessageDialog extends AppCompatDialogFragment implements DialogInterface.OnClickListener {
+public class MessageDialog extends AppCompatDialogFragment
+        implements DialogInterface.OnClickListener {
 
     // IDs of dialogs usage: show message or show loading result
     private static final int PARAMS_MESSAGE = 1;

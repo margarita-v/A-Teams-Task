@@ -25,12 +25,14 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     // ID of common objects
     private static final int INFO_ID = 0;
     // Loaders IDs which will be associated with forms
-    private static final int[] FORM_LOADERS_IDS = { InfoLoader.LOADER_JSON, InfoLoader.LOADER_VALIDATION };
+    private static final int[] FORM_LOADERS_IDS =
+            { InfoLoader.LOADER_JSON, InfoLoader.LOADER_VALIDATION };
 
     // Interface implementation
     private final OnLoadingPerform onLoadingPerformListener;
 
-    public RecyclerViewAdapter(List<BaseModel> items, @NonNull OnLoadingPerform onLoadingPerform) {
+    public RecyclerViewAdapter(List<BaseModel> items,
+                               @NonNull OnLoadingPerform onLoadingPerform) {
         this.items = new ArrayList<>(items);
         this.onLoadingPerformListener = onLoadingPerform;
     }

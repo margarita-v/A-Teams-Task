@@ -35,7 +35,8 @@ public class InfoLoader extends Loader<BaseModel> {
     public static final int LOADER_JSON = 3;
     public static final int LOADER_VALIDATION = 4;
 
-    public static final int[] ALL_LOADERS = { LOADER_IP, LOADER_HEADERS, LOADER_DATETIME, LOADER_JSON, LOADER_VALIDATION };
+    public static final int[] ALL_LOADERS =
+            { LOADER_IP, LOADER_HEADERS, LOADER_DATETIME, LOADER_JSON, LOADER_VALIDATION };
     //endregion
 
     public InfoLoader(Context context, int id) {
